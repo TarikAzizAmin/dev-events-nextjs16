@@ -46,12 +46,21 @@ bookingSchema.pre<IBooking>("save", async function () {
             if (!eventExists) {
                 const error = new Error(`Referenced event id ${booking.eventId} does not exist`);
                 error.name = "ValidationError";
-                return error;
+                throw error;
             }
-        } catch {
-            const validationError = new Error(`Invalid event id ${booking.eventId}`);
-            validationError.name = "ValidationError";
-            return validationError;
+        } catch (error: unknown) {
+            // If it's already a validation error we threw, rethrow it
+            if (error instanceof Error && error.name === "ValidationError") {
+                throw error;
+            }
+            // For invalid ObjectId format or similar validation issues, create a ValidationError
+            if (error instanceof Error && (error.message.includes("Cast to ObjectId failed") || error.message.includes("ObjectId"))) {
+                const validationError = new Error(`Invalid event id ${booking.eventId}`);
+                validationError.name = "ValidationError";
+                throw validationError;
+            }
+            // Rethrow unexpected database errors so they aren't masked
+            throw error;
         }
     }
 });
