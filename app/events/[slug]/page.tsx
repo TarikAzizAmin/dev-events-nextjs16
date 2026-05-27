@@ -42,7 +42,7 @@ const EventDetails = async ({params}: {params: Promise<{slug: string}>}) => {
 
 
     const {slug} = await params;
-    const request = await fetch(`${BASE_URL}\\api\\events\\${slug}`);
+    const request = await fetch(`${BASE_URL}/api/events/${encodeURIComponent(slug)}`);
     const {event: {description, image, overview, location, organizer, mode, agenda, audience, time, date, tags}} = await request.json();
 
     if(!description){
