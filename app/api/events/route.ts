@@ -23,11 +23,11 @@ export async function POST(req: NextRequest){
         }
 
 
-        const image = formData.get('image') as File;
-
-        if(!image){
-            return NextResponse.json({messgae: "Image file is required"}, {status: 400});
+        const imageEntry = formData.get("image");
+        if (!(imageEntry instanceof File) || imageEntry.size === 0) {
+            return NextResponse.json({ message: "Image file is required" }, { status: 400 });
         }
+        const image = imageEntry;
 
         let tags = JSON.parse(formData.get('tags') as string);
         let agenda = JSON.parse(formData.get('agenda') as string);
