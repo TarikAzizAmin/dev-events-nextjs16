@@ -177,7 +177,7 @@ function normalizeTime(time: string): string {
 }
 
 // Create unique index on slug for better performance and data integrity
-eventSchema.index({ slug: 1 }, { unique: true });
+eventSchema.index({ slug: 1 });
 
 // Create compound index for common query patterns (e.g., date and location)
 eventSchema.index({ date: 1, mode: 1 });
@@ -186,4 +186,3 @@ eventSchema.index({ date: 1, mode: 1 });
 // Create and export the Event model
 const Event = models.Event || model<IEvent>("Event", eventSchema);
 export default Event;
-
