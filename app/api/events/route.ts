@@ -29,8 +29,17 @@ export async function POST(req: NextRequest){
         }
         const image = imageEntry;
 
-        let tags = JSON.parse(formData.get('tags') as string);
-        let agenda = JSON.parse(formData.get('agenda') as string);
+        let tags: unknown;
+        let agenda: unknown;
+        try {
+            tags = JSON.parse((formData.get("tags") as string) ?? "[]");
+            agenda = JSON.parse((formData.get("agenda") as string) ?? "[]");
+        } catch {
+            return NextResponse.json(
+                { message: "Invalid tags/agenda format" },
+                { status: 400 }
+            );
+        }
 
         const arrayBuffer = await image.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
